@@ -3,6 +3,8 @@
 
 (defmulti hook (fn [k ctx payload]  k))
 
+(defn define-hook [name schema])
+
 (defmethod hook :default
   [k _ _]
   (println "No hook for " k))

@@ -1,6 +1,6 @@
 (ns zenbox.model)
 
-(def manifest
+(def zen-manifest
   {:ns "zen"
    :entities {:string     {:type "primitive"}
               :integer    {:type "primitive"}
@@ -8,8 +8,7 @@
               :boolean    {:type "primitive"}
               :path       {:type "primitve"}
               :code       {:type "primitive"}
-              :Reference  {:type "type"
-                           :attrs {:id {:type "identifier"}
+              :Reference  {:attrs {:id {:type "identifier"}
                                    :type {:type "identifier"}
                                    :display {:type "string"}}}
               :Coding     {:attrs {:code {:type "string"}
@@ -28,23 +27,26 @@
                                    :system {:type "string"}}}
               :Entity    {:isa ["Resource"]
                           :storage ["jsonb" "memory"]
-                          :attrs {:id {:type "identifier" :constraints {:required true}}
-                                  :type {:type "code" :constraints {:enum "zen.entity.type"}}
+                          :attrs {:id {:type "identifier" :required true}
+                                  :type {:type "code" :enum ["primitive"]}
                                   :storage {:type "code"}
                                   :isa {:type "identifier" :collection true}}}
+
               :Attribute {:isa ["Resource"]
                           :storage ["jsonb" "memory"]
-                          :attrs {:entity {:type "Reference" :constraints {:refers "zen.entity-ref" :required true}}
-                                  :type   {:type "Reference" :constraints {:refers "zen.entity-ref" :required true}}
-                                  :path   {:type "path" :constraints {:required true}}
+                          :attrs {:entity {:type "Reference" :refers ["Entity"] :required true}
+                                  :type   {:type "Reference" :refers ["Entity"] :required true}
+                                  :path   {:type "path" :required true}
                                   :collection {:type "boolean"}}}
+              ;; ????
               :Constraint {:isa ["Resource"]
                            :storage ["jsonb" "memory"]
-                           :attrs {:entity   {:type "Reference" :constraints {:refers "zen.entity-ref" :required true}}
+                           :attrs {:entity   {:type "Reference" :refers ["Entity"] :required true}
                                    :path     {:type "path"}
                                    :refers   {:type "url"}
                                    :enum   {:type "url"}
                                    :required {:type "boolean"}}}
+
               :Operation {:isa ["Resource"]
                           :storage ["jsonb" "memory"]
                           :attrs {:description {:type "string"}
@@ -55,16 +57,11 @@
               :Transform {:isa ["Resource"]
                           :storage ["jsonb" "memory"]
                           :open true
-                          :attrs {:engine {:type "code" :constraints {:enum "zen.transform.engine"}}}}
+                          :attrs {:engine {:type "code" :valueset "zen.transform.engine"}}}
 
               :Route   {:is ["Resource"]
                         :storage ["jsonb" "memory"]
-                        :attrs {:operation {:type "Reference" :constraints {:refers "zen.operation-ref"}}}}}
-
-   :concepts {"zen.entity.type"    [{:code "primitive"}]
-              "zen.entity-ref"     [{:code "Entity"}]
-              "zen.operation-ref"  [{:code "Operation"}]
-              "zen.entity.storage" [{:code "jsonb"} {:code "memory"}]}})
+                        :attrs {:operation {:type "Reference" :refers ["Operation"]}}}}})
 
 (comment
   ;; manifest

@@ -1,4 +1,4 @@
-(ns zenbox.web
+(ns zenbox.rest
   (:require
    [clojure.string :as str]
    [org.httpkit.server :as http-kit]
@@ -10,6 +10,8 @@
    [ring.util.request]
    [ring.middleware.head]
    [ring.util.codec :as codec]
+   [zenbox.events]
+   [zenbox.hooks]
    [clj-yaml.core])
   (:use [ring.middleware.resource]
         [ring.middleware.file]
@@ -49,6 +51,31 @@
          (assoc :body (cheshire.core/generate-string b))
          (assoc-in [:headers "content-type"] "application/json"))
         resp))))
+
+(def manifest
+  {:entities {:web-server {:attrs {:http-kit {:attrs {:port {:type "integer" :default 8080}
+                                                      :worker-name-prefix {:type "string"}
+                                                      :thread {:type "integer"}
+                                                      :max-body {:type "integer"}}}
+                                   :static-dir {:type "string"}}}
+              :config {:attrs {:rest {:type "web-server"}}}}
+   :hooks {:system/start {:rest/start {}}
+           :system/stop  {:rest/stop {}}}})
+
+(zenbox.hooks/define-hook :rest/start {})
+(zenbox.hooks/define-hook :rest/stop {})
+
+(defmethod zenbox.hooks/hook
+  :rest/start
+  [ctx-atom]
+  (when-let [cfg (get-in @ctx-atom [:config :rest])]
+    (swap! ctx-atom assoc-in [:services :rest] :server)))
+
+(defmethod zenbox.hooks/hook
+  :rest/stop
+  [ctx-atom]
+  (when-let [srv (get-in @ctx-atom [:services :rest])]
+    ctx-atom))
 
 (defn start
   "start server with dynamic metadata"

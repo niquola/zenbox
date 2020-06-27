@@ -1,6 +1,9 @@
-{:paths ["src"]
+{
+ :mvn/repos {"my.datomic.com" {:url "https://my.datomic.com/repo"}}
+ :paths ["src"]
  :deps  {org.clojure/clojure         {:mvn/version "1.10.1"}
          clj-commons/clj-yaml        {:mvn/version "0.7.0"}
+         com.datomic/datomic-pro     {:mvn/version "0.9.6045"}
          cheshire                    {:mvn/version "5.8.1"}
          com.sun.xml.bind/jaxb-core  {:mvn/version "2.3.0.1"}
          com.sun.xml.bind/jaxb-impl  {:mvn/version "2.3.2"}
@@ -14,15 +17,19 @@
          org.postgresql/postgresql   {:mvn/version "42.2.5.jre7"}
          honeysql                    {:mvn/version "0.9.4"}
          funcool/promesa             {:mvn/version "3.0.0"}
-         org.clojure/core.rrb-vector {:mvn/version "0.0.14"}}
+         org.clojure/core.rrb-vector {:mvn/version "0.0.14"}
+         org.clojure/alpha.spec {:git/url "https://github.com/clojure/spec-alpha2.git" 
+                                 :sha "30fb655c86db2cfb977ffcd2bcbb44370ac29d41"}
+         }
 
  :aliases
  {:nrepl        {:extra-paths ["dev" "test"]
-                 :extra-deps  {zprint                        {:mvn/version "0.4.16"}
-                               org.clojure/clojure           {:mvn/version "1.10.0"}
-                               org.clojure/tools.nrepl       {:mvn/version "0.2.13"}
-                               cider/cider-nrepl             {:mvn/version "0.20.0"}
-                               refactor-nrepl/refactor-nrepl {:mvn/version "2.4.0"}}
+                 :extra-deps  {
+                               zprint                        {:mvn/version "0.4.16"}
+                               refactor-nrepl/refactor-nrepl {:mvn/version "2.5.0"}
+                               nrepl/nrepl                   {:mvn/version "0.7.0"}
+                               cider/cider-nrepl             {:mvn/version "0.25.2"}
+                               }
                  :jvm-opts    ^:replace ["-XX:-OmitStackTraceInFastThrow"]}
 
   :test         {:extra-paths ["test"]}

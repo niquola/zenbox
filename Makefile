@@ -9,7 +9,7 @@ DATE = $(shell date)
 include .env
 
 repl:
-	clj -A:test:nrepl -R:test:nrepl -e "(-main)" -r
+	clj -A:test:nrepl -m nrepl.cmdline
 
 up:
 	docker-compose up -d
